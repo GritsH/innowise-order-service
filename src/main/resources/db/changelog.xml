@@ -4,4 +4,5 @@
     <include file="/db/xml/item.xml"/>
     <include file="/db/xml/order.xml"/>
     <include file="/db/xml/order_item.xml"/>
+    <include file="/db/xml/populate_item_table.xml"/>
 </databaseChangeLog>

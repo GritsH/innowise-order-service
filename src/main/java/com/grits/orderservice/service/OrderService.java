@@ -15,11 +15,13 @@ import com.grits.orderservice.model.response.OrderResponse;
 import com.grits.orderservice.model.response.UserResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,8 +38,8 @@ public class OrderService {
     private final OrderMapper orderMapper;
 
     @Transactional
-    public OrderResponse createOrder(CreateOrderRequest request) {
-        UserResponse userResponse = userServiceClient.getUserByEmail(request.getEmail());
+    public OrderResponse createOrder(CreateOrderRequest request, String userEmail) {
+        UserResponse userResponse = userServiceClient.getUserByEmail(userEmail);
         Order order = orderMapper.toEntity(request);
         order.setUserId(userResponse.getId());
 
@@ -80,25 +82,28 @@ public class OrderService {
     @Transactional(readOnly = true)
     public Page<OrderResponse> getAllOrders(LocalDateTime from, LocalDateTime to, List<OrderStatus> statuses, int page, int size) {
         Page<Order> orders = orderDao.getAllOrders(from, to, statuses, page, size);
-        return orders.map(order -> {
+        List<OrderResponse> responses = new ArrayList<>();
+
+        for (Order order : orders.getContent()) {
             UserResponse user = userServiceClient.getUserById(order.getUserId());
             OrderResponse response = orderMapper.toResponse(order);
             response.setUser(user);
-            return response;
-        });
+            responses.add(response);
+        }
+        return new PageImpl<>(responses, orders.getPageable(), orders.getTotalElements());
     }
 
     @Transactional(readOnly = true)
     public List<OrderResponse> getOrdersByUserEmail(String email) {
         UserResponse userResponse = userServiceClient.getUserByEmail(email);
-        return orderDao.getOrdersByUserId(userResponse.getId())
-                .stream()
-                .map(order -> {
-                    OrderResponse response = orderMapper.toResponse(order);
-                    response.setUser(userResponse);
-                    return response;
-                })
-                .toList();
+        List<Order> orders = orderDao.getOrdersByUserId(userResponse.getId());
+        List<OrderResponse> responses = new ArrayList<>();
+        for (Order order : orders) {
+            OrderResponse response = orderMapper.toResponse(order);
+            response.setUser(userResponse);
+            responses.add(response);
+        }
+        return responses;
     }
 
     @Transactional
@@ -114,7 +119,12 @@ public class OrderService {
 
     private OrderItem createOrderItem(Order order, OrderItemRequest request) {
         Item item = itemDao.getItemById(request.getItemId());
-        return new OrderItem(UUID.randomUUID(), order, item, request.getQuantity());
+
+        OrderItem orderItem = new OrderItem();
+        orderItem.setOrder(order);
+        orderItem.setItem(item);
+        orderItem.setQuantity(request.getQuantity());
+        return orderItem;
     }
 
     private BigDecimal calculateTotalPrice(List<OrderItem> orderItems) {
