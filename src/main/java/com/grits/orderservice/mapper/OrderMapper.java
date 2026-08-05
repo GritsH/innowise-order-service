@@ -6,16 +6,12 @@ import com.grits.orderservice.model.response.OrderResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import java.util.List;
-
 @Mapper(componentModel = "spring", uses = OrderItemMapper.class)
 public interface OrderMapper {
 
     @Mapping(target = "user", ignore = true)
     @Mapping(source = "orderItems", target = "items")
     OrderResponse toResponse(Order order);
-
-    List<OrderResponse> toResponse(List<Order> orders);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "totalPrice", ignore = true)
