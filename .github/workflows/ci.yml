@@ -41,4 +41,4 @@ jobs:
           -Dsonar.token=$SONAR_TOKEN
 
       - name: Build Docker image
-        run: docker build -t user-service:${{ github.sha }} .
+        run: docker build -t order-service:${{ github.sha }} .
