@@ -1,6 +1,8 @@
-package com.grits.orderservice.model.response;
+package com.grits.orderservice.model.response.order;
 
 import com.grits.orderservice.entity.status.OrderStatus;
+import com.grits.orderservice.model.response.OrderItemResponse;
+import com.grits.orderservice.model.response.UserResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

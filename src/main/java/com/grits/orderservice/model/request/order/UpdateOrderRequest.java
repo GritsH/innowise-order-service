@@ -1,6 +1,7 @@
-package com.grits.orderservice.model.request;
+package com.grits.orderservice.model.request.order;
 
 import com.grits.orderservice.entity.status.OrderStatus;
+import com.grits.orderservice.model.request.OrderItemRequest;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

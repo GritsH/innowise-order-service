@@ -35,6 +35,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/v1/orders/{id}").access(orderAuthorizationManager)
                         .requestMatchers(HttpMethod.PUT, "/v1/orders/{id}").access(orderAuthorizationManager)
                         .requestMatchers(HttpMethod.DELETE, "/v1/orders/{id}").access(orderAuthorizationManager)
+
+                        .requestMatchers("v1/items/**").hasRole(ROLE_ADMIN)
                         .anyRequest()
                         .authenticated()
                 )

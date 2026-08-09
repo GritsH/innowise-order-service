@@ -14,13 +14,13 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: docker
     depends_on:
-      postgres:
+      order-service-postgres:
         condition: service_healthy
     networks:
       - default
 
 
-  postgres:
+  order-service-postgres:
     image: postgres:17
     container_name: order-service-postgres
     env_file:

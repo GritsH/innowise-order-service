@@ -2,18 +2,15 @@ package com.grits.orderservice.controller;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
-import org.junit.jupiter.api.AfterAll;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@Testcontainers
 @ActiveProfiles("test")
 public abstract class AbstractIntegrationTest {
 
@@ -29,12 +26,6 @@ public abstract class AbstractIntegrationTest {
     static {
         postgres.start();
         wireMock.start();
-    }
-
-    @AfterAll
-    static void stopContainers() {
-        wireMock.stop();
-        postgres.stop();
     }
 
     @DynamicPropertySource

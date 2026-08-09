@@ -7,10 +7,10 @@ import com.grits.orderservice.entity.Item;
 import com.grits.orderservice.entity.Order;
 import com.grits.orderservice.entity.status.OrderStatus;
 import com.grits.orderservice.mapper.OrderMapper;
-import com.grits.orderservice.model.request.CreateOrderRequest;
+import com.grits.orderservice.model.request.order.CreateOrderRequest;
 import com.grits.orderservice.model.request.OrderItemRequest;
-import com.grits.orderservice.model.request.UpdateOrderRequest;
-import com.grits.orderservice.model.response.OrderResponse;
+import com.grits.orderservice.model.request.order.UpdateOrderRequest;
+import com.grits.orderservice.model.response.order.OrderResponse;
 import com.grits.orderservice.model.response.UserResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -157,5 +157,4 @@ class OrderServiceTest {
 
         verify(orderDao).deleteOrder(id);
     }
-
 }

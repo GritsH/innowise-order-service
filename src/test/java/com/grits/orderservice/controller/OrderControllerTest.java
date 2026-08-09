@@ -5,9 +5,9 @@ import com.grits.orderservice.entity.Item;
 import com.grits.orderservice.entity.Order;
 import com.grits.orderservice.entity.OrderItem;
 import com.grits.orderservice.entity.status.OrderStatus;
-import com.grits.orderservice.model.request.CreateOrderRequest;
+import com.grits.orderservice.model.request.order.CreateOrderRequest;
 import com.grits.orderservice.model.request.OrderItemRequest;
-import com.grits.orderservice.model.request.UpdateOrderRequest;
+import com.grits.orderservice.model.request.order.UpdateOrderRequest;
 import com.grits.orderservice.repository.ItemRepository;
 import com.grits.orderservice.repository.OrderRepository;
 import com.grits.orderservice.util.JwtTestUtils;
@@ -55,7 +55,13 @@ class OrderControllerTest extends AbstractIntegrationTest {
     @BeforeEach
     void clean() {
         orderRepository.deleteAll();
+        itemRepository.deleteAll();
         wireMock.resetAll();
+
+        Item item = new Item();
+        item.setPrice(BigDecimal.valueOf(99));
+        item.setName("Order item");
+        itemRepository.save(item);
     }
 
     @Test

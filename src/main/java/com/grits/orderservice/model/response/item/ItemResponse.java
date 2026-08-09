@@ -1,4 +1,4 @@
-package com.grits.orderservice.model.response;
+package com.grits.orderservice.model.response.item;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

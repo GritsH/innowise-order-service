@@ -1,8 +1,8 @@
 package com.grits.orderservice.mapper;
 
 import com.grits.orderservice.entity.Order;
-import com.grits.orderservice.model.request.CreateOrderRequest;
-import com.grits.orderservice.model.response.OrderResponse;
+import com.grits.orderservice.model.request.order.CreateOrderRequest;
+import com.grits.orderservice.model.response.order.OrderResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

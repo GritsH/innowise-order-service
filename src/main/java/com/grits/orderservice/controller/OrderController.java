@@ -1,9 +1,9 @@
 package com.grits.orderservice.controller;
 
 import com.grits.orderservice.entity.status.OrderStatus;
-import com.grits.orderservice.model.request.CreateOrderRequest;
-import com.grits.orderservice.model.request.UpdateOrderRequest;
-import com.grits.orderservice.model.response.OrderResponse;
+import com.grits.orderservice.model.request.order.CreateOrderRequest;
+import com.grits.orderservice.model.request.order.UpdateOrderRequest;
+import com.grits.orderservice.model.response.order.OrderResponse;
 import com.grits.orderservice.service.OrderService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
