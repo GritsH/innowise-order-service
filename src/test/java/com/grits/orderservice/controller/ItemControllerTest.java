@@ -16,6 +16,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.math.BigDecimal;
 import java.util.UUID;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -34,6 +37,9 @@ class ItemControllerTest extends AbstractIntegrationTest {
 
     @Autowired
     ItemRepository itemRepository;
+
+    private static final String USER_EMAIL = "john@gmail.com";
+    private static final UUID USER_ID = UUID.randomUUID();
 
     @BeforeEach
     void clean() {
@@ -158,26 +164,33 @@ class ItemControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @DisplayName("should return 403 when user gets item by id")
-    void throw403WhenUserGetsItemById() {
+    @DisplayName("should return item by id for user")
+    void getItemByIdAsUser() {
         try {
             Item item = createTestItem("item");
 
             mockMvc.perform(get("/v1/items/{id}", item.getId())
-                            .with(JwtTestUtils.user(UUID.randomUUID(), "john@gmail.com")))
-                    .andExpect(status().isForbidden());
+                            .with(JwtTestUtils.user(USER_ID, USER_EMAIL)))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.id").value(item.getId().toString()))
+                    .andExpect(jsonPath("$.name").value(item.getName()))
+                    .andExpect(jsonPath("$.price").value(99.00));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     @Test
-    @DisplayName("should return 403 when user gets all items")
-    void throw403WhenUserGetsAllItems() {
+    @DisplayName("should return all items for user")
+    void getAllItemsAsUser() {
         try {
+            createTestItem("item");
+            createTestItem("item2");
+
             mockMvc.perform(get("/v1/items")
-                            .with(JwtTestUtils.user(UUID.randomUUID(), "john@gmail.com")))
-                    .andExpect(status().isForbidden());
+                            .with(JwtTestUtils.user(USER_ID, USER_EMAIL)))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()").value(2));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -234,5 +247,4 @@ class ItemControllerTest extends AbstractIntegrationTest {
         item.setPrice(BigDecimal.valueOf(99));
         return itemRepository.save(item);
     }
-
 }
