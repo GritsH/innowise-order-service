@@ -112,7 +112,7 @@ class OrderControllerTest extends AbstractIntegrationTest {
     @DisplayName("should return all orders")
     void getAllOrders() {
         try {
-            stubUserById();
+            stubUsersByIds();
             createOrder(USER_ID);
             createOrder(USER_ID);
 
@@ -263,5 +263,20 @@ class OrderControllerTest extends AbstractIntegrationTest {
                           "email":"%s"
                         }
                         """.formatted(USER_ID, USER_EMAIL))));
+    }
+
+    private void stubUsersByIds() {
+        wireMock.stubFor(com.github.tomakehurst.wiremock.client.WireMock.get(urlPathEqualTo("/v1/users/by-ids"))
+                .withQueryParam("ids", equalTo(USER_ID.toString()))
+                .willReturn(okJson("""
+                        [
+                            {
+                                "id": "%s",
+                                "name": "John",
+                                "surname": "Doe",
+                                "email": "john@gmail.com"
+                            }
+                        ]
+                        """.formatted(USER_ID))));
     }
 }

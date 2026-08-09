@@ -8,11 +8,11 @@ import com.grits.orderservice.entity.Order;
 import com.grits.orderservice.entity.OrderItem;
 import com.grits.orderservice.entity.status.OrderStatus;
 import com.grits.orderservice.mapper.OrderMapper;
-import com.grits.orderservice.model.request.order.CreateOrderRequest;
 import com.grits.orderservice.model.request.OrderItemRequest;
+import com.grits.orderservice.model.request.order.CreateOrderRequest;
 import com.grits.orderservice.model.request.order.UpdateOrderRequest;
-import com.grits.orderservice.model.response.order.OrderResponse;
 import com.grits.orderservice.model.response.UserResponse;
+import com.grits.orderservice.model.response.order.OrderResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -23,7 +23,10 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -82,14 +85,22 @@ public class OrderService {
     @Transactional(readOnly = true)
     public Page<OrderResponse> getAllOrders(LocalDateTime from, LocalDateTime to, List<OrderStatus> statuses, int page, int size) {
         Page<Order> orders = orderDao.getAllOrders(from, to, statuses, page, size);
-        List<OrderResponse> responses = new ArrayList<>();
+        List<UUID> userIds = orders.getContent().stream()
+                .map(Order::getUserId)
+                .distinct()
+                .toList();
 
-        for (Order order : orders.getContent()) {
-            UserResponse user = userServiceClient.getUserById(order.getUserId());
-            OrderResponse response = orderMapper.toResponse(order);
-            response.setUser(user);
-            responses.add(response);
-        }
+        List<UserResponse> users = userServiceClient.getUsersByIds(userIds);
+        Map<UUID, UserResponse> usersById = users.stream().collect(Collectors.toMap(UserResponse::getId, Function.identity()));
+
+        List<OrderResponse> responses = orders.getContent().stream()
+                .map(order -> {
+                    OrderResponse response = orderMapper.toResponse(order);
+                    response.setUser(usersById.get(order.getUserId()));
+                    return response;
+                })
+                .toList();
+
         return new PageImpl<>(responses, orders.getPageable(), orders.getTotalElements());
     }
 
