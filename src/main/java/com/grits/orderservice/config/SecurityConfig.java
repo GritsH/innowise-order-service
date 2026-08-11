@@ -32,7 +32,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.GET, "/v1/orders").hasRole(ROLE_ADMIN)
                         .requestMatchers(HttpMethod.POST, "/v1/orders").hasRole(ROLE_USER)
-                        .requestMatchers(HttpMethod.GET, "/v1/orders/user").hasAnyRole(ROLE_USER, ROLE_ADMIN)
+                        .requestMatchers(HttpMethod.GET, "/v1/orders/user").hasAnyRole(ROLE_USER)
                         .requestMatchers(HttpMethod.GET, "/v1/orders/{id}").access(orderAuthorizationManager)
                         .requestMatchers(HttpMethod.PUT, "/v1/orders/{id}").access(orderAuthorizationManager)
                         .requestMatchers(HttpMethod.DELETE, "/v1/orders/{id}").access(orderAuthorizationManager)
