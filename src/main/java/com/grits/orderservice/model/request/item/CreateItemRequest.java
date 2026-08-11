@@ -3,6 +3,7 @@ package com.grits.orderservice.model.request.item;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,6 +20,7 @@ import java.math.BigDecimal;
 public class CreateItemRequest {
 
     @NotBlank(message = "Name is required")
+    @Size(max = 255, message = "Name can be no more than 255 characters long")
     private String name;
 
     @DecimalMin(value = "0.0", inclusive = false)

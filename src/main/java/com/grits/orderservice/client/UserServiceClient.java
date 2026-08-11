@@ -17,10 +17,10 @@ import java.util.UUID;
 )
 public interface UserServiceClient {
 
-    @GetMapping("/v1/users/by-email")
+    @GetMapping("/v1/users/email")
     UserResponse getUserByEmail(@RequestParam String email);
 
-    @GetMapping("/v1/users/by-ids")
+    @GetMapping("/v1/users/ids")
     List<UserResponse> getUsersByIds(@RequestParam List<UUID> ids);
 
     @GetMapping("/v1/users/{id}")

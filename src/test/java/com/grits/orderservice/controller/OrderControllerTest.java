@@ -241,7 +241,7 @@ class OrderControllerTest extends AbstractIntegrationTest {
     }
 
     private void stubUserByEmail() {
-        wireMock.stubFor(com.github.tomakehurst.wiremock.client.WireMock.get(urlPathEqualTo("/v1/users/by-email"))
+        wireMock.stubFor(com.github.tomakehurst.wiremock.client.WireMock.get(urlPathEqualTo("/v1/users/email"))
                 .withQueryParam("email", equalTo(USER_EMAIL))
                 .willReturn(okJson("""
                         {
@@ -266,7 +266,7 @@ class OrderControllerTest extends AbstractIntegrationTest {
     }
 
     private void stubUsersByIds() {
-        wireMock.stubFor(com.github.tomakehurst.wiremock.client.WireMock.get(urlPathEqualTo("/v1/users/by-ids"))
+        wireMock.stubFor(com.github.tomakehurst.wiremock.client.WireMock.get(urlPathEqualTo("/v1/users/ids"))
                 .withQueryParam("ids", equalTo(USER_ID.toString()))
                 .willReturn(okJson("""
                         [

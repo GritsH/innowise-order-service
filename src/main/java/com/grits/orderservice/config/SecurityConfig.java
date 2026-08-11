@@ -19,6 +19,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private static final String ROLE_ADMIN = "ADMIN";
+    private static final String ROLE_USER = "USER";
 
     @Bean
     public SecurityFilterChain filterChain(
@@ -30,14 +31,14 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.GET, "/v1/orders").hasRole(ROLE_ADMIN)
-                        .requestMatchers(HttpMethod.POST, "/v1/orders").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/v1/orders/user").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/v1/orders").hasRole(ROLE_USER)
+                        .requestMatchers(HttpMethod.GET, "/v1/orders/user").hasAnyRole(ROLE_USER, ROLE_ADMIN)
                         .requestMatchers(HttpMethod.GET, "/v1/orders/{id}").access(orderAuthorizationManager)
                         .requestMatchers(HttpMethod.PUT, "/v1/orders/{id}").access(orderAuthorizationManager)
                         .requestMatchers(HttpMethod.DELETE, "/v1/orders/{id}").access(orderAuthorizationManager)
 
-                        .requestMatchers(HttpMethod.GET, "/v1/items").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/v1/items/{id}").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/v1/items").hasAnyRole(ROLE_USER, ROLE_ADMIN)
+                        .requestMatchers(HttpMethod.GET, "/v1/items/{id}").hasAnyRole(ROLE_USER, ROLE_ADMIN)
                         .requestMatchers(HttpMethod.POST, "/v1/items").hasRole(ROLE_ADMIN)
                         .requestMatchers(HttpMethod.DELETE, "/v1/items/{id}").hasRole(ROLE_ADMIN)
                         .requestMatchers(HttpMethod.PATCH, "/v1/items/{id}").hasRole(ROLE_ADMIN)

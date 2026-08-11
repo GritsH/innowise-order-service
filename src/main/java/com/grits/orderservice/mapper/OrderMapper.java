@@ -13,11 +13,8 @@ public interface OrderMapper {
     @Mapping(source = "orderItems", target = "items")
     OrderResponse toResponse(Order order);
 
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "totalPrice", ignore = true)
     @Mapping(target = "deleted", constant = "false")
     @Mapping(target = "orderItems", ignore = true)
     @Mapping(target = "status", constant = "CREATED")
-    @Mapping(target = "userId", ignore = true)
     Order toEntity(CreateOrderRequest request);
 }

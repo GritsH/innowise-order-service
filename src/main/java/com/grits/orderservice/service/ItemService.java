@@ -20,7 +20,6 @@ public class ItemService {
     private final ItemDao itemDao;
     private final ItemMapper itemMapper;
 
-    @Transactional
     public ItemResponse createItem(CreateItemRequest request) {
         Item item = itemMapper.toEntity(request);
         Item savedItem = itemDao.save(item);

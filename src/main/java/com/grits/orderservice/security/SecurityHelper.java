@@ -1,12 +1,11 @@
 package com.grits.orderservice.security;
 
+import lombok.experimental.UtilityClass;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
+@UtilityClass
 public class SecurityHelper {
-
-    private SecurityHelper() {
-    }
 
     public static boolean isAdmin(Authentication authentication) {
         return authentication.getAuthorities().stream()

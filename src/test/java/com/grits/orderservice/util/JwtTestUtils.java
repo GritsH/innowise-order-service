@@ -11,17 +11,19 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 @RequiredArgsConstructor
 public class JwtTestUtils {
 
+    private static final String EMAIL = "email";
+
     public static RequestPostProcessor user(UUID keycloakId, String email) {
         return jwt().jwt(jwt -> jwt
                         .subject(keycloakId.toString())
-                        .claim("email", email))
+                        .claim(EMAIL, email))
                 .authorities(new SimpleGrantedAuthority("ROLE_USER"));
     }
 
     public static RequestPostProcessor admin() {
         return jwt().jwt(jwt -> jwt
                         .subject(UUID.randomUUID().toString())
-                        .claim("email", "admin@test.com"))
+                        .claim(EMAIL, "admin@test.com"))
                 .authorities(new SimpleGrantedAuthority("ROLE_ADMIN"));
     }
 }
