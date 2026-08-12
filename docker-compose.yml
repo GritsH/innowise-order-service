@@ -1,0 +1,48 @@
+services:
+
+  order-service:
+    extra_hosts:
+      - "keycloak.local:host-gateway"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: order-service
+    ports:
+      - "8083:8083"
+    env_file:
+      - .env.docker
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      order-service-postgres:
+        condition: service_healthy
+    networks:
+      - default
+
+
+  order-service-postgres:
+    image: postgres:17
+    container_name: order-service-postgres
+    env_file:
+      - .env.docker
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    healthcheck:
+      test:
+        ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - order-service-postgres-data:/var/lib/postgresql/data
+      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+volumes:
+  order-service-postgres-data:
+
+networks:
+  default:
+    name: innowise-network
+    external: true
