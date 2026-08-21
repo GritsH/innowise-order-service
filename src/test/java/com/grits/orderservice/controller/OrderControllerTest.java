@@ -160,7 +160,7 @@ class OrderControllerTest extends AbstractIntegrationTest {
 
             Order updated = orderRepository.findById(order.getId()).orElseThrow();
 
-            assertThat(updated.getStatus()).isEqualTo(OrderStatus.DELIVERED);
+            assertThat(updated.getStatus()).isEqualTo(OrderStatus.PAID);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -210,7 +210,7 @@ class OrderControllerTest extends AbstractIntegrationTest {
     private UpdateOrderRequest updateOrderRequest() {
         Item item = getItem();
         UpdateOrderRequest request = new UpdateOrderRequest();
-        request.setStatus(OrderStatus.DELIVERED);
+        request.setStatus(OrderStatus.PAID);
         request.setItems(List.of(new OrderItemRequest(item.getId(), 3)));
         return request;
     }
