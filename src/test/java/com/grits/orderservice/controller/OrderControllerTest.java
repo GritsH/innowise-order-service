@@ -5,6 +5,7 @@ import com.grits.orderservice.entity.Item;
 import com.grits.orderservice.entity.Order;
 import com.grits.orderservice.entity.OrderItem;
 import com.grits.orderservice.entity.status.OrderStatus;
+import com.grits.orderservice.kafka.PaymentKafkaConsumer;
 import com.grits.orderservice.model.request.order.CreateOrderRequest;
 import com.grits.orderservice.model.request.OrderItemRequest;
 import com.grits.orderservice.model.request.order.UpdateOrderRequest;
@@ -16,6 +17,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
@@ -48,6 +50,9 @@ class OrderControllerTest extends AbstractIntegrationTest {
 
     @Autowired
     private ItemRepository itemRepository;
+
+    @MockitoBean
+    PaymentKafkaConsumer paymentKafkaConsumer;
 
     private static final String USER_EMAIL = "john@gmail.com";
     private static final UUID USER_ID = UUID.randomUUID();
@@ -156,7 +161,7 @@ class OrderControllerTest extends AbstractIntegrationTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(request)))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.status").value("DELIVERED"));
+                    .andExpect(jsonPath("$.status").value("PAID"));
 
             Order updated = orderRepository.findById(order.getId()).orElseThrow();
 

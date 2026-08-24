@@ -2,6 +2,7 @@ package com.grits.orderservice.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.grits.orderservice.entity.Item;
+import com.grits.orderservice.kafka.PaymentKafkaConsumer;
 import com.grits.orderservice.model.request.item.CreateItemRequest;
 import com.grits.orderservice.model.request.item.UpdateItemRequest;
 import com.grits.orderservice.repository.ItemRepository;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
@@ -34,6 +36,9 @@ class ItemControllerTest extends AbstractIntegrationTest {
 
     @Autowired
     ItemRepository itemRepository;
+
+    @MockitoBean
+    PaymentKafkaConsumer paymentKafkaConsumer;
 
     private static final String USER_EMAIL = "john@gmail.com";
     private static final UUID USER_ID = UUID.randomUUID();
