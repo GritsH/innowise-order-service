@@ -7,7 +7,6 @@ import com.grits.orderservice.model.request.item.CreateItemRequest;
 import com.grits.orderservice.model.request.item.UpdateItemRequest;
 import com.grits.orderservice.repository.ItemRepository;
 import com.grits.orderservice.util.JwtTestUtils;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,12 +41,6 @@ class ItemControllerTest extends AbstractIntegrationTest {
 
     private static final String USER_EMAIL = "john@gmail.com";
     private static final UUID USER_ID = UUID.randomUUID();
-
-    @BeforeEach
-    void clean() {
-        itemRepository.deleteAll();
-        wireMock.resetAll();
-    }
 
     @Test
     @DisplayName("should create item")

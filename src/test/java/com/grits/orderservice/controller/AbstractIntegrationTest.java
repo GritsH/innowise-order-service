@@ -2,8 +2,11 @@ package com.grits.orderservice.controller;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
+import org.junit.jupiter.api.BeforeEach;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -13,6 +16,9 @@ import org.testcontainers.containers.PostgreSQLContainer;
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 public abstract class AbstractIntegrationTest {
+
+    @Autowired
+    JdbcTemplate jdbcTemplate;
 
     static WireMockServer wireMock = new WireMockServer(WireMockConfiguration.options().dynamicPort());
 
@@ -35,5 +41,14 @@ public abstract class AbstractIntegrationTest {
         registry.add("spring.datasource.password", postgres::getPassword);
 
         registry.add("user-service.url", () -> "http://localhost:" + wireMock.port());
+    }
+
+    @BeforeEach
+    void cleanDatabase() {
+        jdbcTemplate.execute("DELETE FROM order_item");
+        jdbcTemplate.execute("DELETE FROM \"order\"");
+        jdbcTemplate.execute("DELETE FROM item");
+
+        wireMock.resetAll();
     }
 }
