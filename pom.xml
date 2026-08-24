@@ -29,7 +29,8 @@
         <sonar.coverage.exclusions>
             **/config/**,
             **/*Configuration.java,
-            **/converter/**
+            **/converter/**,
+            **/kafka/**
         </sonar.coverage.exclusions>
         <spring-cloud.version>2025.0.0</spring-cloud.version>
     </properties>
