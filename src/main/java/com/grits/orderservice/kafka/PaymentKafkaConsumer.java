@@ -27,6 +27,10 @@ public class PaymentKafkaConsumer {
         log.info("Received Payment Event for orderId={} with status={}", event.getOrderId(), event.getStatus());
 
         Order order = orderDao.getOrderById(event.getOrderId());
+        if (order.getStatus() != OrderStatus.CREATED) {
+            log.info("Ignoring Event for orderId={}; order is in terminal status={}", event.getOrderId(), order.getStatus());
+            return;
+        }
         if (event.getStatus() == PaymentStatus.SUCCESS) {
             order.setStatus(OrderStatus.PAID);
         } else {
