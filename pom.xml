@@ -29,7 +29,8 @@
         <sonar.coverage.exclusions>
             **/config/**,
             **/*Configuration.java,
-            **/converter/**
+            **/converter/**,
+            **/kafka/**
         </sonar.coverage.exclusions>
         <spring-cloud.version>2025.0.0</spring-cloud.version>
     </properties>
@@ -62,6 +63,10 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
         </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>
@@ -128,6 +133,10 @@
             <artifactId>wiremock-standalone</artifactId>
             <version>${wiremock.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
     </dependencies>
 

@@ -5,8 +5,9 @@ import com.grits.orderservice.entity.Item;
 import com.grits.orderservice.entity.Order;
 import com.grits.orderservice.entity.OrderItem;
 import com.grits.orderservice.entity.status.OrderStatus;
-import com.grits.orderservice.model.request.order.CreateOrderRequest;
+import com.grits.orderservice.kafka.PaymentKafkaConsumer;
 import com.grits.orderservice.model.request.OrderItemRequest;
+import com.grits.orderservice.model.request.order.CreateOrderRequest;
 import com.grits.orderservice.model.request.order.UpdateOrderRequest;
 import com.grits.orderservice.repository.ItemRepository;
 import com.grits.orderservice.repository.OrderRepository;
@@ -16,6 +17,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
@@ -49,15 +51,14 @@ class OrderControllerTest extends AbstractIntegrationTest {
     @Autowired
     private ItemRepository itemRepository;
 
+    @MockitoBean
+    PaymentKafkaConsumer paymentKafkaConsumer;
+
     private static final String USER_EMAIL = "john@gmail.com";
     private static final UUID USER_ID = UUID.randomUUID();
 
     @BeforeEach
     void clean() {
-        orderRepository.deleteAll();
-        itemRepository.deleteAll();
-        wireMock.resetAll();
-
         Item item = new Item();
         item.setPrice(BigDecimal.valueOf(99));
         item.setName("Order item");
@@ -156,11 +157,11 @@ class OrderControllerTest extends AbstractIntegrationTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(request)))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.status").value("DELIVERED"));
+                    .andExpect(jsonPath("$.status").value("PAID"));
 
             Order updated = orderRepository.findById(order.getId()).orElseThrow();
 
-            assertThat(updated.getStatus()).isEqualTo(OrderStatus.DELIVERED);
+            assertThat(updated.getStatus()).isEqualTo(OrderStatus.PAID);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -210,7 +211,7 @@ class OrderControllerTest extends AbstractIntegrationTest {
     private UpdateOrderRequest updateOrderRequest() {
         Item item = getItem();
         UpdateOrderRequest request = new UpdateOrderRequest();
-        request.setStatus(OrderStatus.DELIVERED);
+        request.setStatus(OrderStatus.PAID);
         request.setItems(List.of(new OrderItemRequest(item.getId(), 3)));
         return request;
     }

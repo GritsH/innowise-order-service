@@ -83,7 +83,7 @@ class OrderServiceTest {
         UUID orderId = UUID.randomUUID();
         UUID userId = UUID.randomUUID();
         UUID itemId = UUID.randomUUID();
-        UpdateOrderRequest request = new UpdateOrderRequest(OrderStatus.DELIVERED, List.of(new OrderItemRequest(itemId, 3)));
+        UpdateOrderRequest request = new UpdateOrderRequest(OrderStatus.PAID, List.of(new OrderItemRequest(itemId, 3)));
         Item item = new Item();
         item.setId(itemId);
         item.setPrice(BigDecimal.TEN);
@@ -104,7 +104,7 @@ class OrderServiceTest {
 
         assertThat(result).isSameAs(response);
         assertThat(result.getUser()).isSameAs(user);
-        assertThat(order.getStatus()).isEqualTo(OrderStatus.DELIVERED);
+        assertThat(order.getStatus()).isEqualTo(OrderStatus.PAID);
         assertThat(order.getOrderItems()).hasSize(1);
         assertThat(order.getTotalPrice()).isEqualByComparingTo("30");
     }
